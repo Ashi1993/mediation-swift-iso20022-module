@@ -24,8 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.wso2.carbon.connector.core.AbstractConnector;
-import org.wso2.carbon.connector.core.ConnectException;
 import org.wso2.carbon.module.swiftiso20022.constants.ConnectorConstants;
+import org.wso2.carbon.module.swiftiso20022.constants.MT940Constants;
 import org.wso2.carbon.module.swiftiso20022.model.ErrorModel;
 import org.wso2.carbon.module.swiftiso20022.utils.ConnectorUtils;
 import org.wso2.carbon.module.swiftiso20022.utils.MT940ValidationUtils;
@@ -45,25 +45,32 @@ public class MT940FormatValidator extends AbstractConnector {
     private static final String DASH = "-";
 
     @Override
-    public void connect(MessageContext messageContext) throws ConnectException {
+    public void connect(MessageContext messageContext) {
         log.debug("Executing MT940FormatValidator to validate the MT940 format");
 
-        String payload = null;
+        String payload = "";
         try {
             JSONObject jsonPayload = XML.toJSONObject(messageContext.getEnvelope().getBody().toString())
-                    .getJSONObject("soapenv:Body");
-            if (jsonPayload.has("text")) {
-                payload = jsonPayload.getJSONObject("text").getString("content");
-            } else {
-                for (Iterator it = jsonPayload.keys(); it.hasNext(); ) {
-                    String key = (String) it.next();
-                    if (key.startsWith("axis2ns")) {
-                        payload = jsonPayload.getJSONObject(key).getString("content");
+                    .getJSONObject(MT940Constants.SOAP_BODY);
+            if (jsonPayload != null) {
+                if (jsonPayload.has(MT940Constants.TEXT)) {
+                    payload = jsonPayload.getJSONObject(MT940Constants.TEXT).getString(MT940Constants.CONTENT);
+                } else {
+                    for (Iterator it = jsonPayload.keys(); it.hasNext(); ) {
+                        String key = (String) it.next();
+                        if (key.startsWith(MT940Constants.AXIS2_NS)) {
+                            payload = jsonPayload.getJSONObject(key).getString(MT940Constants.CONTENT);
+                        }
                     }
                 }
+            } else {
+                log.error("Failed to read the text payload from request.");
+                ConnectorUtils.appendErrorToMessageContext(messageContext, ConnectorConstants.MISSING_REQUEST_PAYLOAD,
+                        ConnectorConstants.ERROR_MISSING_PAYLOAD);
+                this.handleException(ConnectorConstants.ERROR_MISSING_PAYLOAD, messageContext);
             }
         } catch (JSONException e) {
-            log.error(String.format("Failed to read the text payload from request. %s", e.getMessage()));
+            log.error("Failed to read the text payload from request.");
             ConnectorUtils.appendErrorToMessageContext(messageContext, ConnectorConstants.INVALID_REQUEST_PAYLOAD,
                     e.getMessage());
             this.handleException(e.getMessage(), messageContext);

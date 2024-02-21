@@ -61,6 +61,7 @@ public class MT940FormatValidatorTestConstants {
     Object[][] getInvalidReferenceDataProvider() {
 
         return new Object[][]{
+                {":20:"},
                 {":20: "},
                 {":20:tqibyrtbgergqohgfheuigbFWV743FEUWFB7G34BFVGRYGRWnaehrghhubarh"},
                 {":20:test//"},
@@ -72,6 +73,7 @@ public class MT940FormatValidatorTestConstants {
     Object[][] getInvalidAccountIdentifierDataProvider() {
 
         return new Object[][]{
+                {":25:"},
                 {":25: "},
                 {":25:tqibyrtbgergqohgfheuigbFWV743FEUWFB7G34BFVGRYGjbegjbqebubgbquebbdhaRWnaehrghhubarh"},
                 {":25:test}"}
@@ -82,6 +84,7 @@ public class MT940FormatValidatorTestConstants {
     Object[][] getInvalidStatementNumberDataProvider() {
 
         return new Object[][]{
+                {":28C:"},
                 {":28C: "},
                 {":28C:12345/3456"},
                 {":28C:12345"},
@@ -93,6 +96,7 @@ public class MT940FormatValidatorTestConstants {
     Object[][] getInvalidBalanceDataProvider() {
 
         return new Object[][]{
+                {":60F:"},
                 {":60F: "},
                 {":60F:1234534567537056031767589432984756473892"},
                 {":60F:D12345456789034567898765433487654658616813865868318683683168618303634683610"},
