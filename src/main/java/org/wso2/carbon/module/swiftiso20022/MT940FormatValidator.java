@@ -71,7 +71,7 @@ public class MT940FormatValidator extends AbstractConnector {
                 this.handleException(ConnectorConstants.ERROR_MISSING_PAYLOAD, messageContext);
             }
         } catch (JSONException e) {
-            log.error("Failed to read the text payload from request.");
+            log.error("Failed to read the text payload from request.", e);
             ConnectorUtils.appendErrorToMessageContext(messageContext, ConnectorConstants.INVALID_REQUEST_PAYLOAD,
                     e.getMessage());
             this.handleException(e.getMessage(), messageContext);
