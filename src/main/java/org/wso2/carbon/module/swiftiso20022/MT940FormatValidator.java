@@ -60,6 +60,7 @@ public class MT940FormatValidator extends AbstractConnector {
                         String key = (String) it.next();
                         if (key.startsWith(MT940Constants.AXIS2_NS)) {
                             payload = jsonPayload.getJSONObject(key).getString(MT940Constants.CONTENT);
+                            break;
                         }
                     }
                 }
